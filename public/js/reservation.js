@@ -43,14 +43,3 @@ $(document).ready(function () {
 $('body').on('change','#showTime', function (e) {
     getSeats($("#showTime").val());
 });
-
-$('body').on('click','.delete', function (e) {
-    e.preventDefault();
-
-    let id = $(this).data('id');
-    console.log(id);
-    // $.ajax({
-    //     type: "get",
-    //     url: '/reservation/delete/'
-    // });
-});
