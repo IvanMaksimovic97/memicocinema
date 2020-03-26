@@ -81,6 +81,12 @@ class ActorController extends Controller
     {
         $response['actor'] = Actor::find($id);
 
+        if($response['actor'] == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Actor not found.');
+            return redirect('/admin/display');
+        }
         return view('pages.admin.edit.actor')->with($response);
     }
 
@@ -99,6 +105,12 @@ class ActorController extends Controller
         ]);
 
         $actor = Actor::find($id);
+        if($actor == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Actor not found.');
+            return redirect('/admin/display');
+        }
 
         $actor->first_name = $request->input('firstName');
         $actor->last_name = $request->input('lastName');
@@ -121,6 +133,13 @@ class ActorController extends Controller
     public function destroy($id)
     {
         $actor = Actor::find($id);
+
+        if($actor == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Actor not found.');
+            return redirect('/admin/display');
+        }
 
         $actor->delete();
 

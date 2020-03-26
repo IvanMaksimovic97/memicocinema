@@ -79,7 +79,12 @@ class DirectorController extends Controller
     public function edit($id)
     {
         $response['director'] = Director::find($id);
-
+        if($response['director'] == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Director not found.');
+            return redirect('/admin/display');
+        }
         return view('pages.admin.edit.director')->with($response);
     }
 
@@ -98,6 +103,12 @@ class DirectorController extends Controller
         ]);
 
         $director = Director::find($id);
+        if($director == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Director not found.');
+            return redirect('/admin/display');
+        }
 
         $director->first_name = $request->input('firstName');
         $director->last_name = $request->input('lastName');
@@ -120,7 +131,12 @@ class DirectorController extends Controller
     public function destroy($id)
     {
         $director = Director::find($id);
-
+        if($director == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Director not found.');
+            return redirect('/admin/display');
+        }
         $director->delete();
 
         session()->flash('messageType', 'success');

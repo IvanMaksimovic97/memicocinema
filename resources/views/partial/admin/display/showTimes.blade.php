@@ -6,6 +6,7 @@
                 <th>Title</th>
                 <th>Time</th>
                 <th>Max seats</th>
+                <th>Reserved seats</th>
                 <th>Free seats</th>
                 <th>Action</th>
             </tr>
@@ -17,6 +18,7 @@
                     <td>{{$showTime->movie->title}}</td>
                     <td>{{$showTime->time}}</td>
                     <td>{{$showTime->seats}}</td>
+                    <td>{{$showTime->getReservedSeats()}}</td>
                     <td>{{$showTime->getSeats()}}</td>
                     <td>
                         <a href="{{url("")}}/admin/edit/ShowTime/{{$showTime->id}}" class="btn btn-warning btn-sm">Edit</a>

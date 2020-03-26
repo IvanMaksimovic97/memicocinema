@@ -77,7 +77,12 @@ class GenreController extends Controller
     public function edit($id)
     {
         $response['genre'] = Genre::find($id);
-
+        if($response['genre'] == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Genre not found.');
+            return redirect('/admin/display');
+        }
         return view('pages.admin.edit.genre')->with($response);
     }
 
@@ -95,7 +100,12 @@ class GenreController extends Controller
         ]);
 
         $genre = Genre::find($id);
-
+        if($genre == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Genre not found.');
+            return redirect('/admin/display');
+        }
         $genre->name = $request->input('name');
 
         $genre->save();
@@ -116,7 +126,12 @@ class GenreController extends Controller
     public function destroy($id)
     {
         $genre = Genre::find($id);
-
+        if($genre == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Genre not found.');
+            return redirect('/admin/display');
+        }
         $genre->delete();
 
         session()->flash('messageType', 'success');

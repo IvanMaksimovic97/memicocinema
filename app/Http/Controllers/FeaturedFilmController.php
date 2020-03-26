@@ -83,6 +83,12 @@ class FeaturedFilmController extends Controller
     public function edit($id)
     {
         $response['featuredFilm'] = FeaturedFilm::find($id);
+        if($response['featuredFilm'] == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Featured film not found.');
+            return redirect('/admin/display');
+        }
         $response['movies'] = Movie::all();
 
         return view('pages.admin.edit.featuredFilm')->with($response);
@@ -104,6 +110,12 @@ class FeaturedFilmController extends Controller
         $movie_id = $request->id;
 
         $featuredFilm = FeaturedFilm::find($id);
+        if($featuredFilm == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Featured film not found.');
+            return redirect('/admin/display');
+        }
 
         $featuredFilm->movie_id = $movie_id;
 
@@ -125,6 +137,12 @@ class FeaturedFilmController extends Controller
     public function destroy($id)
     {
         $featuredFilm = FeaturedFilm::find($id);
+        if($featuredFilm == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Featured film not found.');
+            return redirect('/admin/display');
+        }
 
         $featuredFilm->delete();
 

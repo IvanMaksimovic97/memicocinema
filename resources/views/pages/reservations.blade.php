@@ -10,6 +10,7 @@
                     <table class="table">
                         <thead>
                             <th>ID</th>
+                            <th>User</th>
                             <th>Created at</th>
                             <th>Movie title</th>
                             <th>Screening time</th>
@@ -20,12 +21,13 @@
                             @foreach ($reservations as $reservation)
                                 <tr>
                                     <td>{{$reservation->id}}</th>
+                                    <td>{{$reservation->user->username}}</th>
                                     <td>{{date_format($reservation->created_at, "d-M-Y H:i")}}</td>
                                     <td>{{$reservation->show_time->movie->title}}</td>
                                     <td>{{date_format($reservation->show_time->time, "d-M-Y H:i")}}</td>
                                     <td>{{$reservation->reserved_seats}}</td>
                                     <td>
-                                        <a href="{{url("")}}/reservation/delete/{{$reservation->id}}" class="btn btn-danger btn-sm">
+                                        <a href="#" data-id="{{$reservation->id}}" class="btn btn-danger btn-sm delete">
                                             Delete
                                         </a>
                                     </td>
@@ -42,4 +44,7 @@
             </div>
         </div>
     </div>
+@endsection
+@section('additionalJS')
+
 @endsection

@@ -29,26 +29,30 @@ class UserController extends Controller
     }
 
     public function login(LoginRequest $request) {
-        $username = $request->input('username');
-        $password = $request->input('password');
+        $username = $request->username;
+        $password = sha1($request->password);
 
-        $user = User::
-            where('username','=',$username)
-            ->where('password','=',sha1($password))
-            ->where('active','=',1)->first();
+        $user = User::where('username', $username)->where('password', $password)->first();
 
-        if($user != null) {
-
-            $request->session()->put('user', $user);
-            Log::createLogInAttemptLog($user->id);
-            return redirect('/');
+        if($user != null){
+            if($user->active){
+                session()->put('user', $user);
+                Log::createLogInAttemptLog($user->id);
+                return redirect('/');
+            }
+            else{
+                Log::createLogInAttemptLog($user->id, 0);
+                session()->flash('messageType', 'danger');
+                session()->flash('messageHeading', 'Inactive account!');
+                session()->flash('message', 'Your account is not active!');
+                return redirect("/login");
+            }
         }
-        else {
+        else{
             Log::createLogInAttemptLog(null, 0);
             session()->flash('messageType', 'danger');
             session()->flash('messageHeading', 'Login Failed!');
             session()->flash('message', 'Incorrect login information.');
-
             return redirect("/login");
         }
     }
@@ -79,13 +83,14 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $emailRegex = "/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix";
-        $passwordRegex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/";
+        $passwordRegex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/";
 
         $request->validate([
             'username' => 'required|unique:users,username',
-            'email' => 'required|unique:users,email|regex:'.$emailRegex,
+            'email' => 'required|unique:users,email|email',
             'password' => 'required|confirmed|regex:'.$passwordRegex
+        ], [
+            'password.regex' => 'Password format: Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character'
         ]);
 
         $username = $request->input('username');
@@ -192,6 +197,13 @@ class UserController extends Controller
     public function edit($id)
     {
         $response['user'] = User::find($id);
+        if($response['user'] == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'User not Found!');
+
+            return redirect('/admin/display');
+        }
         $response['roles'] = Role::all();
 
         return view('pages.admin.edit.user')->with($response);

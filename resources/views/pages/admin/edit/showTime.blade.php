@@ -29,7 +29,7 @@
                     </div>
                     <div class="form-group">
                         <label for="seats">Number of seats:</label>
-                        <input type="number" name="seats" id="seats" class="form-control" value="{{$showTime->available_seats}}">
+                        <input type="number" name="seats" id="seats" class="form-control" value="{{$showTime->seats}}">
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Update" class="btn btn-primary">

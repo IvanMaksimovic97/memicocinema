@@ -32,6 +32,7 @@ class ShowTime extends Model
 	public $timestamps = false;
 
 	protected $casts = [
+        'time' => 'datetime:d-M-Y H:i:s',
 		'movie_id' => 'int',
 		'seats' => 'int'
 	];
@@ -65,5 +66,13 @@ class ShowTime extends Model
             $sum += $reservation->reserved_seats;
 
         return $this->seats - $sum;
+    }
+
+    public function getReservedSeats(){
+        $sum = 0;
+        foreach($this->reservations as $reservation){
+            $sum += $reservation->reserved_seats;
+        }
+        return $sum;
     }
 }

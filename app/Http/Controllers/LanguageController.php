@@ -78,7 +78,12 @@ class LanguageController extends Controller
     public function edit($id)
     {
         $response['language'] = Language::find($id);
-
+        if($response['language'] == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Language not found.');
+            return redirect('/admin/display');
+        }
         return view('pages.admin.edit.language')->with($response);
     }
 
@@ -95,10 +100,15 @@ class LanguageController extends Controller
             'name' => 'required'
         ]);
 
-        $language = new Language();
+        $language = Language::find($id);
+        if($language == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Language not found.');
+            return redirect('/admin/display');
+        }
 
-        $language->name = Language::find($id);
-
+        $language->name = $request->name;
         $language->save();
 
         session()->flash('messageType', 'success');
@@ -117,7 +127,12 @@ class LanguageController extends Controller
     public function destroy($id)
     {
         $language = Language::find($id);
-
+        if($language == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Language not found.');
+            return redirect('/admin/display');
+        }
         $language->delete();
 
         session()->flash('messageType', 'success');

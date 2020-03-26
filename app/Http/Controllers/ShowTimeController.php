@@ -77,7 +77,11 @@ class ShowTimeController extends Controller
      */
     public function show($id)
     {
-        return ShowTime::find($id)->getSeats();
+        $showTime = ShowTime::find($id);
+        if($showTime == null){
+            http_response_code(404);
+        }
+        return $showTime->getSeats();
     }
 
     /**
@@ -89,6 +93,12 @@ class ShowTimeController extends Controller
     public function edit($id)
     {
         $response['showTime'] = ShowTime::find($id);
+        if($response['showTime'] == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Show Time not found.');
+            return redirect('/admin/display');
+        }
         $response['movies'] = Movie::all();
 
         return view('pages.admin.edit.showTime')->with($response);
@@ -114,10 +124,22 @@ class ShowTimeController extends Controller
         $seats = $request->seats;
 
         $showTime = ShowTime::find($id);
+        if($showTime == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Show Time not found.');
+            return redirect('/admin/display');
+        }
 
         $showTime->movie_id = $movie_id;
         $showTime->time = $time;
-        $showTime->available_seats = $seats;
+        if($showTime->getReservedSeats() > $seats){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Number of seats can not be lover then reserved seats!');
+            return redirect('/admin/display');
+        }
+        $showTime->seats = $seats;
 
         $showTime->save();
 
@@ -137,7 +159,16 @@ class ShowTimeController extends Controller
     public function destroy($id)
     {
         $showTime = ShowTime::find($id);
+        if($showTime == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Show Time not found.');
+            return redirect('/admin/display');
+        }
 
+        foreach($showTime->reservations as $reservation){
+            $reservation->delete();
+        }
         $showTime->delete();
 
         session()->flash('messageType', 'success');

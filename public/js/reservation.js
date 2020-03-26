@@ -27,6 +27,11 @@ $('body').on('submit', '#reserve', function (e) {
             $("#submit").parent().after(response);
             getSeats($("#showTime").val());
             $("#seats").val("");
+        },
+        error: function(xhr, options, error){
+            if(xhr.status == 422){
+                alert('There are no enough available seats!');
+            }
         }
     });
 });
@@ -37,4 +42,15 @@ $(document).ready(function () {
 
 $('body').on('change','#showTime', function (e) {
     getSeats($("#showTime").val());
+});
+
+$('body').on('click','.delete', function (e) {
+    e.preventDefault();
+
+    let id = $(this).data('id');
+    console.log(id);
+    // $.ajax({
+    //     type: "get",
+    //     url: '/reservation/delete/'
+    // });
 });

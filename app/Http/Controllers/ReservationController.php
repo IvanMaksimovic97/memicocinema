@@ -16,7 +16,7 @@ class ReservationController extends Controller
     public function index()
     {
         $response['reservations'] = Reservation::where('user_id',session('user')['id'])->get();
-
+        //dd($response['reservations']);
         return view('pages.reservations')->with($response);
     }
 
@@ -111,8 +111,17 @@ class ReservationController extends Controller
     {
         $reservation = Reservation::find($id);
 
-        if (session('user')['id'] == $reservation->user_id || session('user')['role_id'] == 1)
+        if($reservation == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Reservation not found.');
+            return redirect()->back();
+        }
+
+        if (session('user')['id'] == $reservation->user_id || session('user')['role_id'] == 1){
+
             $reservation->delete();
+        }
 
         return redirect()->back();
     }

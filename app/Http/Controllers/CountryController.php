@@ -78,6 +78,12 @@ class CountryController extends Controller
     public function edit($id)
     {
         $response['country'] = Country::find($id);
+        if($response['country'] == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Country not found.');
+            return redirect('/admin/display');
+        }
 
         return view('pages.admin.edit.country')->with($response);
     }
@@ -96,6 +102,12 @@ class CountryController extends Controller
         ]);
 
         $country = Country::find($id);
+        if($country == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Country not found.');
+            return redirect('/admin/display');
+        }
 
         $country->name = $request->input('name');
 
@@ -117,6 +129,12 @@ class CountryController extends Controller
     public function destroy($id)
     {
         $country = Country::find($id);
+        if($country == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Country not found.');
+            return redirect('/admin/display');
+        }
 
         $country->delete();
 

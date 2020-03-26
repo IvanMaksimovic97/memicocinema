@@ -173,6 +173,13 @@ class MovieController extends Controller
     public function edit($id)
     {
         $response['movie'] = Movie::find($id);
+
+        if($response['movie'] == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Movie not found.');
+            return redirect('/admin/display');
+        }
         $response['actors'] = Actor::all();
         $response['genres'] = Genre::all();
         $response['directors'] = Director::all();
@@ -204,6 +211,13 @@ class MovieController extends Controller
         ]);
 
         $movie = Movie::find($id);
+
+        if($movie == null){
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Movie not found.');
+            return redirect('/admin/display');
+        }
 
         if($request->images != null) {
             $request->validate([
@@ -272,12 +286,20 @@ class MovieController extends Controller
     {
         $movie = Movie::find($id);
 
-        $movie->delete();
+        if($movie != null){
+            $movie->delete();
 
-        session()->flash('messageType', 'success');
-        session()->flash('messageHeading', 'Success!');
-        session()->flash('message', 'Movie deleted.');
+            session()->flash('messageType', 'success');
+            session()->flash('messageHeading', 'Success!');
+            session()->flash('message', 'Movie deleted.');
 
-        return redirect('/admin/display');
+            return redirect('/admin/display');
+        }
+        else{
+            session()->flash('messageType', 'danger');
+            session()->flash('messageHeading', 'Error!');
+            session()->flash('message', 'Movie not found.');
+            return redirect('/admin/display');
+        }
     }
 }
